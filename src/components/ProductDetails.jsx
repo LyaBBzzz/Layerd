@@ -1,44 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, ShoppingCart, Heart, ArrowLeft, Star } from 'lucide-react';
+import { ChevronDown, ChevronUp, ShoppingCart, Heart, ArrowLeft, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { MagneticButton } from './MagneticButton';
 import { CustomSelect } from './CustomSelect';
 import clsx from 'clsx';
 import { ReviewItem } from './views/ReviewItem';
+import { ReviewsCarousel } from './views/ReviewsCarousel';
+import { Accordion } from './views/Accordion';
 import { Footer } from './Footer';
 
-const Accordion = ({ title, children, defaultOpen = false }) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
 
-  return (
-    <div className="border-b border-gray-200 py-4 group">
-      <button 
-        className="flex justify-between items-center w-full text-left cursor-pointer outline-none"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className="text-xs font-bold group-hover:text-gray-500 transition-colors duration-200">{title}</span>
-        <span className="group-hover:bg-gray-100 p-1 rounded-full transition-colors duration-200 text-gray-500 group-hover:text-black">
-          {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-        </span>
-      </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="pt-4 text-xs text-gray-500 leading-relaxed">
-              {children}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
 
 export const ProductDetails = () => {
   const { selectedProduct, navigateTo, addToCart, language, t, wishlistItems, toggleWishlist, formatPrice, products } = useShop();
@@ -57,7 +29,7 @@ export const ProductDetails = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 w-full h-[100dvh] bg-[#f4f4f4] z-20 flex flex-col pt-24 pb-12 px-4 lg:px-12 overflow-y-auto"
+      className="fixed inset-0 w-full h-[100dvh] bg-[#f4f4f4] z-20 flex flex-col pt-24 pb-12 px-4 lg:px-12 overflow-y-auto overflow-x-hidden"
     >
 
 
@@ -91,7 +63,7 @@ export const ProductDetails = () => {
         )}
       </AnimatePresence>
 
-      <div className="w-full max-w-7xl mx-auto mb-8">
+      <div className="w-full max-w-7xl mx-auto mb-4">
         <button 
           onClick={() => navigateTo('home')}
           className="flex items-center space-x-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors"
@@ -101,23 +73,23 @@ export const ProductDetails = () => {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row min-h-full max-w-7xl mx-auto w-full flex-1 gap-12 pb-12">
+      <div className="flex flex-col lg:flex-row max-w-7xl mx-auto w-full flex-grow shrink-0 gap-12 pb-4">
         
         {/* Left Side - 3D Carousel (Colors) */}
-        <div className="flex-1 relative flex flex-col items-center justify-center min-h-[500px]">
+        <div className="flex-1 relative flex flex-col items-center justify-start min-h-[500px]">
           {/* Brand Background Text */}
-          <div className="absolute -bottom-12 left-0 w-full flex flex-col items-center pointer-events-none z-10">
+          <div className="w-full flex flex-col items-center pointer-events-none z-0 mt-4 lg:mt-8">
             <motion.h1 
-              initial={{ y: 20, opacity: 0 }}
+              initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="font-anton text-[12vw] lg:text-[7vw] xl:text-[110px] uppercase text-black tracking-wider text-center whitespace-nowrap"
+              className="font-anton text-[12vw] lg:text-[7vw] xl:text-[110px] uppercase text-black tracking-wider text-center whitespace-nowrap leading-none"
             >
               {selectedProduct.brand}
             </motion.h1>
           </div>
 
-          <div className="relative z-10 w-full max-w-2xl aspect-square flex items-center justify-center perspective-[1000px]">
+          <div className="relative z-10 w-full max-w-2xl aspect-square flex items-center justify-center perspective-[1000px] -mt-8 lg:-mt-20">
             {colors.map((color, idx) => {
               let offset = idx - activeIndex;
               if (offset < -1) offset += colors.length;
@@ -134,6 +106,16 @@ export const ProductDetails = () => {
                   key={idx}
                   className="absolute cursor-pointer flex items-center justify-center"
                   onClick={() => setActiveIndex(idx)}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={(e, { offset }) => {
+                    if (offset.x < -50) {
+                      setActiveIndex((prev) => (prev + 1) % colors.length);
+                    } else if (offset.x > 50) {
+                      setActiveIndex((prev) => (prev - 1 + colors.length) % colors.length);
+                    }
+                  }}
                   initial={false}
                   animate={{
                     x: isActive ? 0 : isPrev ? '-75%' : '75%',
@@ -162,7 +144,7 @@ export const ProductDetails = () => {
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.2, type: "spring" }}
-          className="w-full lg:w-[450px] flex flex-col justify-center pl-0 lg:pl-4 pt-12 lg:pt-0"
+          className="w-full lg:w-[450px] flex flex-col justify-start pl-0 lg:pl-4 pt-4 lg:pt-4"
         >
           <div className="h-6 overflow-hidden mb-2">
             <AnimatePresence mode="wait">
@@ -280,39 +262,7 @@ export const ProductDetails = () => {
               {t('deliveryText')}
             </Accordion>
             <Accordion title={t('reviews')}>
-              <div className="space-y-6 mt-4">
-                {[
-                  {
-                    name: "Alexander M.",
-                    rating: 5,
-                    date: { en: "Oct 24, 2026", ru: "24 Окт, 2026" },
-                    text: {
-                      en: "Absolutely stunning quality. The leather is incredibly soft, and the fit is perfect straight out of the box. Worth every penny.",
-                      ru: "Потрясающее качество. Кожа невероятно мягкая, и они сели идеально прямо из коробки. Стоят каждого потраченного цента."
-                    }
-                  },
-                  {
-                    name: "Sophie T.",
-                    rating: 5,
-                    date: { en: "Sep 12, 2026", ru: "12 Сен, 2026" },
-                    text: {
-                      en: "A beautiful minimalist design that pairs well with almost anything. The craftsmanship is highly commendable.",
-                      ru: "Прекрасный минималистичный дизайн, который сочетается почти со всем. Мастерство заслуживает самой высокой похвалы."
-                    }
-                  },
-                  {
-                    name: "James L.",
-                    rating: 4,
-                    date: { en: "Aug 05, 2026", ru: "05 Авг, 2026" },
-                    text: {
-                      en: "Great shoes overall, but they run slightly narrow. I'd recommend sizing up if you have wider feet. Otherwise, exceptional.",
-                      ru: "В целом отличная обувь, но немного узковата. Рекомендую брать на размер больше, если у вас широкая стопа. В остальном - превосходно."
-                    }
-                  }
-                ].map((review, i) => (
-                  <ReviewItem key={i} review={review} />
-                ))}
-              </div>
+              <ReviewsCarousel />
             </Accordion>
           </div>
         </motion.div>

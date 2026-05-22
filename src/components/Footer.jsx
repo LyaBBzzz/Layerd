@@ -29,7 +29,7 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="relative z-10 w-full max-w-5xl mx-auto mt-12 pt-16 pb-12 border-t border-gray-200 bg-[#f4f4f4]">
+    <footer className="relative z-10 shrink-0 w-full max-w-5xl mx-auto mt-4 pt-8 pb-12 border-t border-gray-200 bg-[#f4f4f4]">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         {/* Newsletter */}
         <div className="lg:col-span-2">

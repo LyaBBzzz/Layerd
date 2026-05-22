@@ -10,8 +10,9 @@ export const ProductCard = ({ product }) => {
 
   return (
     <div className="bg-white rounded-3xl p-6 shadow-sm flex flex-col hover:shadow-lg transition-shadow h-full group">
+      <h3 className="font-anton text-2xl uppercase tracking-wide mb-4">{product.brand}</h3>
       <div 
-        className="aspect-square flex items-center justify-center bg-[#f4f4f4] rounded-2xl p-4 cursor-pointer mb-6 overflow-hidden relative"
+        className="aspect-square flex items-center justify-center bg-[#f4f4f4] rounded-2xl p-4 cursor-pointer mb-4 overflow-hidden relative"
         onClick={() => {
           navigateTo('product', product);
         }}
@@ -61,8 +62,6 @@ export const ProductCard = ({ product }) => {
           </button>
         </div>
       </div>
-      
-      <h3 className="font-anton text-2xl uppercase tracking-wide">{product.brand}</h3>
       <p className="text-gray-500 font-bold text-xs mt-1 mb-4 flex-1">{product.name[language]}</p>
       
       <div className="flex justify-between items-center mt-auto border-t border-gray-100 pt-4">
