@@ -21,6 +21,7 @@ export const ProductCard = ({ product }) => {
           src={product.colors[0].image} 
           className="w-full h-full object-contain invisible" 
           alt=""
+          loading="lazy"
         />
         {product.colors.map((color, colorIdx) => (
           <motion.img 
@@ -33,6 +34,7 @@ export const ProductCard = ({ product }) => {
             animate={{ opacity: currentColorIndex === colorIdx ? 1 : 0 }}
             transition={{ duration: 0.4 }}
             style={{ pointerEvents: currentColorIndex === colorIdx ? 'auto' : 'none' }}
+            loading="lazy"
           />
         ))}
         
