@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, ShoppingCart, Heart, ArrowLeft, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronUp, ShoppingCart, Heart, ArrowLeft, Star, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { MagneticButton } from './MagneticButton';
 import { CustomSelect } from './CustomSelect';
@@ -13,7 +13,7 @@ import { Footer } from './Footer';
 
 
 export const ProductDetails = () => {
-  const { selectedProduct, navigateTo, addToCart, language, t, wishlistItems, toggleWishlist, formatPrice, products } = useShop();
+  const { selectedProduct, navigateTo, addToCart, language, t, wishlistItems, toggleWishlist, formatPrice, products, toast } = useShop();
   const [activeIndex, setActiveIndex] = useState(0); // Selected color index
   const [selectedSize, setSelectedSize] = useState(43);
   const [zoomedImage, setZoomedImage] = useState(null);
@@ -40,23 +40,49 @@ export const ProductDetails = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-zoom-out"
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-white/20 backdrop-blur-[30px] p-4 cursor-zoom-out"
             onClick={() => setZoomedImage(null)}
           >
             <button 
-              className="absolute top-8 right-8 text-white hover:text-gray-300 transition-colors"
-              onClick={() => setZoomedImage(null)}
+              className="absolute top-8 right-8 text-black hover:text-gray-600 transition-colors z-[210] p-2 bg-white/50 hover:bg-white rounded-full shadow-sm"
+              onClick={(e) => { e.stopPropagation(); setZoomedImage(null); }}
             >
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <X size={32} />
             </button>
+            
+            {(() => {
+              const addImages = activeColor.additionalImages || [];
+              const idx = addImages.indexOf(zoomedImage);
+              if (idx !== -1 && addImages.length > 1) {
+                return (
+                  <>
+                    <button 
+                      className="absolute left-4 md:left-12 text-black hover:text-gray-600 z-[210] p-2 md:p-4 bg-white/50 hover:bg-white shadow-sm rounded-full transition-all" 
+                      onClick={(e) => { e.stopPropagation(); setZoomedImage(addImages[(idx - 1 + addImages.length) % addImages.length]); }}
+                    >
+                      <ChevronLeft size={32} />
+                    </button>
+                    <button 
+                      className="absolute right-4 md:right-12 text-black hover:text-gray-600 z-[210] p-2 md:p-4 bg-white/50 hover:bg-white shadow-sm rounded-full transition-all" 
+                      onClick={(e) => { e.stopPropagation(); setZoomedImage(addImages[(idx + 1) % addImages.length]); }}
+                    >
+                      <ChevronRight size={32} />
+                    </button>
+                  </>
+                );
+              }
+              return null;
+            })()}
+
             <motion.img
+              key={zoomedImage}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               src={zoomedImage}
               alt="Zoomed product"
-              className="max-w-full max-h-full object-contain drop-shadow-2xl cursor-default"
+              className="max-w-[85vw] lg:max-w-3xl max-h-[80vh] object-contain drop-shadow-2xl cursor-default"
               onClick={(e) => e.stopPropagation()}
             />
           </motion.div>
@@ -73,10 +99,10 @@ export const ProductDetails = () => {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row max-w-7xl mx-auto w-full flex-grow shrink-0 gap-12 pb-4">
+      <div className="flex flex-col lg:flex-row max-w-7xl mx-auto w-full flex-grow shrink-0 gap-4 lg:gap-12 pb-4">
         
         {/* Left Side - 3D Carousel (Colors) */}
-        <div className="flex-1 relative flex flex-col items-center justify-start min-h-[500px]">
+        <div className="flex-1 relative flex flex-col items-center justify-start min-h-[300px] lg:min-h-[500px] mb-8 lg:mb-0">
           {/* Brand Background Text */}
           <div className="w-full flex flex-col items-center pointer-events-none z-0 mt-4 lg:mt-8">
             <motion.h1 
@@ -89,7 +115,25 @@ export const ProductDetails = () => {
             </motion.h1>
           </div>
 
-          <div className="relative z-10 w-full max-w-2xl aspect-square flex items-center justify-center perspective-[1000px] -mt-8 lg:-mt-20">
+          <div className="relative z-10 w-full max-w-2xl aspect-[4/3] lg:aspect-square flex items-center justify-center perspective-[1000px] mt-4 lg:mt-0">
+            {colors.length > 1 && (
+              <>
+                <button 
+                  className="absolute left-4 md:left-12 z-20 p-2 md:p-3 bg-white/50 backdrop-blur-md rounded-full hover:bg-white shadow-md transition-all text-gray-800"
+                  onClick={() => setActiveIndex((prev) => (prev - 1 + colors.length) % colors.length)}
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                
+                <button 
+                  className="absolute right-4 md:right-12 z-20 p-2 md:p-3 bg-white/50 backdrop-blur-md rounded-full hover:bg-white shadow-md transition-all text-gray-800"
+                  onClick={() => setActiveIndex((prev) => (prev + 1) % colors.length)}
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </>
+            )}
+
             {colors.map((color, idx) => {
               let offset = idx - activeIndex;
               if (offset < -1) offset += colors.length;
@@ -105,14 +149,11 @@ export const ProductDetails = () => {
                 <motion.div
                   key={idx}
                   className="absolute cursor-pointer flex items-center justify-center"
-                  onClick={() => setActiveIndex(idx)}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.2}
-                  onDragEnd={(e, { offset }) => {
-                    if (offset.x < -50) {
+                  onClick={() => isActive ? setZoomedImage(color.image) : setActiveIndex(idx)}
+                  onPanEnd={(e, info) => {
+                    if (info.offset.x < -50) {
                       setActiveIndex((prev) => (prev + 1) % colors.length);
-                    } else if (offset.x > 50) {
+                    } else if (info.offset.x > 50) {
                       setActiveIndex((prev) => (prev - 1 + colors.length) % colors.length);
                     }
                   }}
@@ -125,7 +166,7 @@ export const ProductDetails = () => {
                     opacity: isActive ? 1 : 0.4,
                     filter: isActive ? 'blur(0px)' : 'blur(4px)'
                   }}
-                  transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                  transition={{ type: "spring", stiffness: 250, damping: 25 }}
                   style={{ zIndex: isActive ? 10 : 1 }}
                 >
                   <img 
@@ -162,11 +203,18 @@ export const ProductDetails = () => {
           </div>
           <h2 className="font-anton text-4xl mb-6 uppercase">{selectedProduct.name[language]}</h2>
           
-          <div className="flex justify-between items-end mb-8">
-            <h2 className="font-anton text-4xl">{formatPrice(selectedProduct.price)}</h2>
+          <div className="flex flex-wrap justify-between items-center sm:items-end mb-8 gap-y-4 gap-x-2 sm:gap-x-4">
+            <div className="flex flex-col">
+              <h2 className="font-anton text-3xl sm:text-4xl whitespace-nowrap leading-none">{formatPrice(selectedProduct.price)}</h2>
+              {activeColor.outOfStock && (
+                <span className="text-red-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest mt-2">
+                  {language === 'ru' ? 'Нет в наличии' : 'Out of Stock'}
+                </span>
+              )}
+            </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="flex space-x-2">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="flex space-x-1 sm:space-x-2">
                 {colors.map((c, idx) => (
                   <button
                     key={idx}
@@ -194,27 +242,46 @@ export const ProductDetails = () => {
           </div>
 
           <div className="flex space-x-4 mb-10 w-full">
-            <MagneticButton className="flex-1">
+            {activeColor.outOfStock ? (
+              <div className="flex-1 w-full flex flex-col">
+                <p className="text-[10px] text-gray-500 mb-2 uppercase tracking-widest font-bold">
+                  {language === 'ru' 
+                    ? 'Оставьте почту, и мы свяжемся с вами, когда товар будет в наличии' 
+                    : 'Leave your email and we will contact you when back in stock'}
+                </p>
+                <div className="w-full flex items-center border border-gray-300 rounded-full overflow-hidden bg-white">
+                  <input 
+                    type="email" 
+                    placeholder="E-mail"
+                    className="flex-1 bg-transparent px-4 py-3 text-xs outline-none text-black placeholder-gray-400 font-medium"
+                  />
+                  <button 
+                    onClick={() => { toast(language === 'ru' ? 'Вы подписаны на уведомление' : 'You are subscribed'); }}
+                    className="bg-black text-white px-6 py-3 font-bold text-[10px] uppercase hover:bg-gray-800 transition-colors shrink-0 h-full"
+                  >
+                    {language === 'ru' ? 'Отправить' : 'Notify'}
+                  </button>
+                </div>
+              </div>
+            ) : (
               <button 
                 onClick={() => addToCart(selectedProduct, selectedSize, activeColor)}
-                className="w-full bg-[#a3a3a3] hover:bg-black transition-colors text-white rounded-full py-3 flex items-center justify-center font-bold text-xs uppercase"
+                className="flex-1 w-full bg-[#a3a3a3] hover:bg-black hover:scale-[1.02] hover:shadow-lg transition-all duration-300 text-white rounded-full py-3 flex items-center justify-center font-bold text-xs uppercase"
               >
                 {t('addToCart')} <ShoppingCart size={14} className="ml-2" />
               </button>
-            </MagneticButton>
-            <MagneticButton>
-              <button 
-                onClick={() => toggleWishlist(selectedProduct, activeColor)}
-                className={clsx(
-                  "w-12 h-12 rounded-full border flex items-center justify-center transition-colors",
-                  wishlistItems.some(i => i.id === selectedProduct.id && i.selectedColor.name === activeColor.name) 
-                    ? "bg-red-50 border-red-100 text-red-500 hover:bg-red-100" 
-                    : "border-gray-300 hover:bg-gray-100 text-black"
-                )}
-              >
-                <Heart size={16} fill={wishlistItems.some(i => i.id === selectedProduct.id && i.selectedColor.name === activeColor.name) ? "currentColor" : "none"} />
-              </button>
-            </MagneticButton>
+            )}
+            <button 
+              onClick={() => toggleWishlist(selectedProduct, activeColor)}
+              className={clsx(
+                "w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-md shrink-0",
+                wishlistItems.some(i => i.id === selectedProduct.id && i.selectedColor.name === activeColor.name) 
+                  ? "bg-red-50 border-red-100 text-red-500 hover:bg-red-100" 
+                  : "border-gray-300 hover:bg-gray-100 text-black hover:border-gray-400"
+              )}
+            >
+              <Heart size={16} fill={wishlistItems.some(i => i.id === selectedProduct.id && i.selectedColor.name === activeColor.name) ? "currentColor" : "none"} />
+            </button>
           </div>
 
           <div className="mb-8 text-xs text-gray-500 leading-relaxed">

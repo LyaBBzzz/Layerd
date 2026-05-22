@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { useShop } from '../context/ShopContext';
 
 export const Sidebar = () => {
-  const { t, activeCategory, setActiveCategory, activeSubCategory, setActiveSubCategory, setIsSearchOpen, products, activeDepartment, isMobileMenuOpen, setIsMobileMenuOpen, navigateTo } = useShop();
+  const { t, activeCategory, setActiveCategory, activeSubCategory, setActiveSubCategory, setIsSearchOpen, products, activeDepartment, setActiveDepartment, isMobileMenuOpen, setIsMobileMenuOpen, navigateTo, language, toggleLanguage, currency, toggleCurrency, wishlistItems, setIsWishlistOpen } = useShop();
 
   const categories = [
     { id: 'shoes', label: t('shoes') },
@@ -115,42 +115,44 @@ export const Sidebar = () => {
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="overflow-hidden flex flex-col space-y-4 mt-5 mb-2 pl-8 pr-8"
+                    className="overflow-hidden"
                   >
-                    {subs.map((sub) => {
-                      const isSubActive = sub.id === activeSubCategory;
-                      const count = products.filter(p => p.category === cat.id && p.subCategory === sub.id && ((p.department || 'men') === activeDepartment)).length;
-                      const hasItems = count > 0;
-                      
-                      return (
-                        <div 
-                          key={sub.id} 
-                          onClick={() => {
-                            if (hasItems) {
-                              setActiveSubCategory(sub.id);
-                              if (window.innerWidth < 1024) {
-                                setIsMobileMenuOpen(false);
+                    <div className="flex flex-col space-y-4 mt-5 mb-2 pl-8 pr-8">
+                      {subs.map((sub) => {
+                        const isSubActive = sub.id === activeSubCategory;
+                        const count = products.filter(p => p.category === cat.id && p.subCategory === sub.id && ((p.department || 'men') === activeDepartment)).length;
+                        const hasItems = count > 0;
+                        
+                        return (
+                          <div 
+                            key={sub.id} 
+                            onClick={() => {
+                              if (hasItems) {
+                                setActiveSubCategory(sub.id);
+                                if (window.innerWidth < 1024) {
+                                  setIsMobileMenuOpen(false);
+                                }
                               }
-                            }
-                          }}
-                          className={clsx(
-                            "text-xs transition-all duration-300 uppercase tracking-[0.15em] flex items-center justify-between",
-                            hasItems ? "cursor-pointer" : "cursor-not-allowed opacity-60",
-                            isSubActive ? "text-black font-bold" : (hasItems ? "text-gray-500 hover:text-black" : "text-gray-400")
-                          )}
-                        >
-                          <div className="flex items-center">
-                            {isSubActive && <span className="w-1.5 h-1.5 bg-black rounded-full mr-3" />}
-                            {!isSubActive && <span className="w-1.5 h-1.5 bg-transparent rounded-full mr-3" />}
-                            {sub.label}
+                            }}
+                            className={clsx(
+                              "text-xs transition-all duration-300 uppercase tracking-[0.15em] flex items-center justify-between",
+                              hasItems ? "cursor-pointer" : "cursor-not-allowed opacity-60",
+                              isSubActive ? "text-black font-bold" : (hasItems ? "text-gray-500 hover:text-black" : "text-gray-400")
+                            )}
+                          >
+                            <div className="flex items-center">
+                              {isSubActive && <span className="w-1.5 h-1.5 bg-black rounded-full mr-3" />}
+                              {!isSubActive && <span className="w-1.5 h-1.5 bg-transparent rounded-full mr-3" />}
+                              {sub.label}
+                            </div>
+                            <span className={clsx(
+                              "text-[10px] font-bold",
+                              isSubActive ? "text-gray-500" : "text-gray-400"
+                            )}>({count})</span>
                           </div>
-                          <span className={clsx(
-                            "text-[10px] font-bold",
-                            isSubActive ? "text-gray-500" : "text-gray-400"
-                          )}>({count})</span>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -215,11 +217,41 @@ export const Sidebar = () => {
                 >
                   {t('blog')}
                 </a>
+                <a 
+                  href="#" 
+                  onClick={(e) => { e.preventDefault(); setIsWishlistOpen(true); setIsMobileMenuOpen(false); }}
+                  className="text-2xl font-anton uppercase tracking-widest text-gray-400 hover:text-black flex items-center w-fit"
+                >
+                  <span>{t('wishlist')}</span>
+                  {wishlistItems.length > 0 && (
+                    <span className="ml-1 -mt-5 bg-red-500 text-white text-[11px] w-5 h-5 rounded-full flex items-center justify-center font-bold font-sans tracking-normal">
+                      {wishlistItems.length}
+                    </span>
+                  )}
+                </a>
               </div>
 
               <div className="h-[1px] w-full bg-gray-200 mb-12" />
 
               {sidebarContent}
+
+              <div className="h-[1px] w-full bg-gray-200 my-12" />
+              
+              <div className="flex space-x-6 pb-12">
+                <div 
+                  onClick={toggleCurrency}
+                  className="text-sm font-bold text-gray-500 cursor-pointer hover:text-black flex items-center"
+                >
+                  {currency} <span className="text-[10px] ml-1">▼</span>
+                </div>
+                <div className="w-[1px] h-4 bg-gray-300"></div>
+                <div 
+                  onClick={toggleLanguage}
+                  className="text-sm font-bold text-gray-500 cursor-pointer hover:text-black flex items-center"
+                >
+                  {language.toUpperCase()} <span className="text-[10px] ml-1">▼</span>
+                </div>
+              </div>
             </motion.div>
           </>
         )}

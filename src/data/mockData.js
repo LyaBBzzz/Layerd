@@ -147,6 +147,7 @@ export const products = [
         name: "Brown",
         colorCode: "#8B5A2B",
         image: "/images/shoes/sneakers/ListView_sneackers/4Sneackers.png",
+        outOfStock: true,
         additionalImages: [
           "/images/shoes/sneakers/ListView_sneackers/4Sneackers_1view.png",
           "/images/shoes/sneakers/ListView_sneackers/4Sneackers_2view.png"

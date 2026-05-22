@@ -27,8 +27,8 @@ export const CustomSelect = ({ value, onChange, options, placeholder, className,
       onClick={() => setIsOpen(!isOpen)}
     >
       <div className="w-full h-full flex items-center justify-between">
-        <span>{displayLabel}</span>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="ml-3">
+        <span className="truncate">{displayLabel}</span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="ml-1 md:ml-3 shrink-0">
           <ChevronDown size={14} />
         </motion.div>
       </div>

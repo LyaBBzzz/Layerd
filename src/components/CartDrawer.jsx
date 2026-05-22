@@ -5,7 +5,7 @@ import { useShop } from '../context/ShopContext';
 import clsx from 'clsx';
 
 export const CartDrawer = () => {
-  const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, clearCart, language, t, formatPrice } = useShop();
+  const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity, clearCart, language, t, formatPrice } = useShop();
   const [checkoutStep, setCheckoutStep] = React.useState('cart'); // 'cart', 'form', 'success'
   
   const [formData, setFormData] = React.useState({ name: '', email: '', phone: '', address: '' });
@@ -54,7 +54,7 @@ export const CartDrawer = () => {
     }
   };
 
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
 
   return (
     <AnimatePresence>
@@ -105,8 +105,10 @@ export const CartDrawer = () => {
                             <img src={item.selectedColor ? item.selectedColor.image : item.colors[0].image} alt={item.name[language]} className="w-full h-full object-contain" />
                           </div>
                           <div className="flex-1 flex flex-col justify-center">
-                            <h3 className="font-anton text-xl uppercase leading-none mb-1">{item.brand}</h3>
-                            <p className="text-gray-500 text-xs font-bold mb-2">{item.name[language]}</p>
+                            <div className="flex justify-between items-start">
+                              <h3 className="font-anton text-xl uppercase leading-none mb-1">{item.brand}</h3>
+                            </div>
+                            <p className="text-gray-500 text-xs font-bold mb-2 pr-6">{item.name[language]}</p>
                             <div className="flex items-center space-x-3 text-xs font-bold text-gray-400">
                               <span>{t('size') || 'SIZE'}: {item.selectedSize}</span>
                               {item.selectedColor && (
@@ -116,13 +118,20 @@ export const CartDrawer = () => {
                                 </span>
                               )}
                             </div>
-                            <div className="font-anton text-lg mt-2">{formatPrice(item.price)}</div>
+                            <div className="flex justify-between items-center mt-2">
+                              <div className="font-anton text-lg">{formatPrice(item.price * (item.quantity || 1))}</div>
+                              <div className="flex items-center bg-white rounded-full px-2 py-1 shadow-sm border border-gray-100">
+                                <button onClick={() => updateQuantity(item.cartId, -1)} className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors">-</button>
+                                <span className="text-xs font-bold w-6 text-center">{item.quantity || 1}</span>
+                                <button onClick={() => updateQuantity(item.cartId, 1)} className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-black hover:bg-gray-100 rounded-full transition-colors">+</button>
+                              </div>
+                            </div>
                           </div>
                           <button 
                             onClick={() => removeFromCart(item.cartId)}
-                            className="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors"
+                            className="absolute top-2 right-2 p-2 bg-white rounded-full text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm"
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       ))

@@ -7,12 +7,12 @@ const ShopContext = createContext();
 export const useShop = () => useContext(ShopContext);
 
 export const ShopProvider = ({ children }) => {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState('landing');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
-  const [language, setLanguage] = useState('en');
-  const [currency, setCurrency] = useState('USD');
+  const [language, setLanguage] = useState('ru');
+  const [currency, setCurrency] = useState('RUB');
   const [viewMode, setViewMode] = useState('gallery');
   const [activeCategory, setActiveCategory] = useState('shoes');
   const [activeSubCategory, setActiveSubCategory] = useState('sneakers');
@@ -23,6 +23,12 @@ export const ShopProvider = ({ children }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [toast, setToast] = useState(null);
+
+  const handleSetActiveDepartment = useCallback((dept) => {
+    setActiveDepartment(dept);
+    setActiveCategory('shoes');
+    setActiveSubCategory('sneakers');
+  }, []);
 
   const showToast = useCallback((title, subtitle, image) => {
     const id = Date.now();
@@ -38,9 +44,34 @@ export const ShopProvider = ({ children }) => {
   }, []);
 
   const addToCart = useCallback((product, size, color) => {
-    setCartItems(prev => [...prev, { ...product, selectedSize: size, selectedColor: color, cartId: Date.now() }]);
+    setCartItems(prev => {
+      const existingItemIndex = prev.findIndex(item => 
+        item.id === product.id && 
+        item.selectedSize === size && 
+        item.selectedColor?.name === color.name
+      );
+      if (existingItemIndex >= 0) {
+        const newItems = [...prev];
+        newItems[existingItemIndex] = {
+          ...newItems[existingItemIndex],
+          quantity: (newItems[existingItemIndex].quantity || 1) + 1
+        };
+        return newItems;
+      }
+      return [...prev, { ...product, selectedSize: size, selectedColor: color, cartId: Date.now(), quantity: 1 }];
+    });
     showToast(language === 'en' ? 'Added to Cart' : 'Добавлено в корзину', `${product.brand} ${product.name[language]}`, color.image);
   }, [language, showToast]);
+
+  const updateQuantity = useCallback((cartId, delta) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.cartId === cartId) {
+        const newQty = (item.quantity || 1) + delta;
+        return newQty > 0 ? { ...item, quantity: newQty } : item;
+      }
+      return item;
+    }));
+  }, []);
 
   const removeFromCart = useCallback((cartId) => {
     setCartItems(prev => prev.filter(item => item.cartId !== cartId));
@@ -81,19 +112,20 @@ export const ShopProvider = ({ children }) => {
   }, [currency]);
 
   const contextValue = useMemo(() => ({
-    currentPage, selectedProduct, cartItems, wishlistItems, products,
-    navigateTo, addToCart, removeFromCart, clearCart, toggleWishlist,
+    currentPage, setCurrentPage, selectedProduct, setSelectedProduct, products,
+    cartItems, setCartItems, wishlistItems, setWishlistItems,
+    navigateTo, addToCart, removeFromCart, updateQuantity, clearCart, toggleWishlist,
     isCartOpen, setIsCartOpen, isWishlistOpen, setIsWishlistOpen,
     language, toggleLanguage, currency, toggleCurrency, t,
     viewMode, setViewMode, activeCategory, setActiveCategory,
-    activeSubCategory, setActiveSubCategory, activeDepartment, setActiveDepartment,
+    activeSubCategory, setActiveSubCategory, activeDepartment, setActiveDepartment: handleSetActiveDepartment,
     activeInfoPage, setActiveInfoPage, isSearchOpen, setIsSearchOpen,
     isMobileMenuOpen, setIsMobileMenuOpen, formatPrice, toast
   }), [
     currentPage, selectedProduct, cartItems, wishlistItems, 
-    navigateTo, addToCart, removeFromCart, clearCart, toggleWishlist,
+    navigateTo, addToCart, removeFromCart, updateQuantity, clearCart, toggleWishlist,
     isCartOpen, isWishlistOpen, language, toggleLanguage, currency, toggleCurrency, t,
-    viewMode, activeCategory, activeSubCategory, activeDepartment,
+    viewMode, activeCategory, activeSubCategory, activeDepartment, handleSetActiveDepartment,
     activeInfoPage, isSearchOpen, isMobileMenuOpen, formatPrice, toast
   ]);
 

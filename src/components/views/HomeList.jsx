@@ -22,7 +22,7 @@ export const HomeList = ({
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+        <div className="grid grid-cols-3 md:flex items-center gap-2 md:gap-4 w-full md:w-auto">
           <CustomSelect 
             value={filterSize}
             onChange={(val) => setFilterSize(val)}
@@ -31,7 +31,7 @@ export const HomeList = ({
               ...allAvailableSizes.map(s => ({ value: s, label: s }))
             ]}
             placeholder={t('allSizes')}
-            className="bg-transparent border border-gray-300 rounded-full px-4 py-2 text-xs font-bold outline-none cursor-pointer hover:border-black transition-colors min-w-[120px]"
+            className="w-full bg-transparent border border-gray-300 rounded-full px-2 md:px-4 py-2 text-[10px] sm:text-xs font-bold outline-none cursor-pointer hover:border-black transition-colors flex justify-center"
           />
 
           <CustomSelect 
@@ -42,7 +42,7 @@ export const HomeList = ({
               ...allAvailableColors.map(c => ({ value: c, label: c }))
             ]}
             placeholder={t('allColors')}
-            className="bg-transparent border border-gray-300 rounded-full px-4 py-2 text-xs font-bold outline-none cursor-pointer hover:border-black transition-colors min-w-[120px]"
+            className="w-full bg-transparent border border-gray-300 rounded-full px-2 md:px-4 py-2 text-[10px] sm:text-xs font-bold outline-none cursor-pointer hover:border-black transition-colors flex justify-center"
           />
 
           <CustomSelect 
@@ -54,7 +54,7 @@ export const HomeList = ({
               { value: 'desc', label: t('priceDesc') }
             ]}
             placeholder={t('sortBy')}
-            className="bg-transparent border border-gray-300 rounded-full px-4 py-2 text-xs font-bold outline-none cursor-pointer hover:border-black transition-colors min-w-[140px]"
+            className="w-full bg-transparent border border-gray-300 rounded-full px-2 md:px-4 py-2 text-[10px] sm:text-xs font-bold outline-none cursor-pointer hover:border-black transition-colors flex justify-center"
           />
         </div>
       </div>
@@ -71,7 +71,7 @@ export const HomeList = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayedProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} initialColor={filterColor} />
           ))}
         </div>
       )}

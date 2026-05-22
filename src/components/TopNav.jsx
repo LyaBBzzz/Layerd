@@ -8,7 +8,10 @@ export const TopNav = () => {
   const { cartItems, wishlistItems, language, toggleLanguage, currency, toggleCurrency, t, navigateTo, setIsCartOpen, setIsWishlistOpen, setIsSearchOpen, activeDepartment, setActiveDepartment, currentPage, isMobileMenuOpen, setIsMobileMenuOpen, setViewMode } = useShop();
 
   return (
-    <header className="fixed top-0 left-0 w-full flex items-center justify-between px-4 lg:px-8 py-4 z-50 bg-[#f4f4f4]/80 backdrop-blur-md border-b border-gray-200/50">
+    <header className={clsx(
+      "fixed top-0 left-0 w-full flex items-center justify-between px-4 lg:px-8 py-4 z-50 border-b",
+      currentPage === 'landing' ? "bg-white border-white" : "bg-[#f4f4f4]/80 backdrop-blur-md border-gray-200/50"
+    )}>
       
       {/* Left Side (Mobile Menu only) */}
       <div className="flex items-center flex-1 z-10 pointer-events-none">
@@ -55,7 +58,7 @@ export const TopNav = () => {
         {/* Logo */}
         <a 
           href="#" 
-          onClick={(e) => { e.preventDefault(); navigateTo('home'); setViewMode('gallery'); }} 
+          onClick={(e) => { e.preventDefault(); navigateTo('landing'); }} 
           className="text-black text-lg tracking-[0.2em] font-black flex items-center pointer-events-auto shrink-0"
         >
           LAYERED
@@ -82,11 +85,11 @@ export const TopNav = () => {
       </div>
 
       {/* Right side icons */}
-      <div className="flex-1 flex justify-end items-center space-x-4 lg:space-x-6 z-10 pointer-events-none">
+      <div className="flex-1 flex justify-end items-center gap-2 sm:gap-4 lg:gap-6 z-10 pointer-events-none">
         <MagneticButton className="pointer-events-auto">
           <button 
             onClick={() => setIsSearchOpen(true)}
-            className="text-gray-400 hover:text-black transition-colors hidden sm:block p-2"
+            className="text-gray-400 hover:text-black transition-colors hidden sm:flex p-2"
           >
             <Search size={18} />
           </button>
@@ -104,7 +107,7 @@ export const TopNav = () => {
             )}
           </button>
         </MagneticButton>
-        <div className="flex space-x-3 pointer-events-auto">
+        <div className="hidden md:flex gap-2 sm:gap-3 items-center pointer-events-auto">
           <div 
             onClick={toggleCurrency}
             className="text-xs font-bold text-gray-400 cursor-pointer hover:text-black flex items-center"

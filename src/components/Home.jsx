@@ -122,19 +122,27 @@ export const Home = () => {
       </AnimatePresence>
 
       {/* View Toggle */}
-      <div className="w-full max-w-5xl mx-auto flex justify-end items-center mb-8 space-x-6">
-        <button 
-          onClick={() => setViewMode('gallery')}
-          className={clsx("text-xs font-bold uppercase tracking-widest transition-all", viewMode === 'gallery' ? "text-black border-b-2 border-black pb-1" : "text-gray-400 hover:text-black pb-1 border-b-2 border-transparent")}
-        >
-          {t('galleryView')}
-        </button>
-        <button 
-          onClick={() => setViewMode('list')}
-          className={clsx("text-xs font-bold uppercase tracking-widest transition-all", viewMode === 'list' ? "text-black border-b-2 border-black pb-1" : "text-gray-400 hover:text-black pb-1 border-b-2 border-transparent")}
-        >
-          {t('viewMore')}
-        </button>
+      <div className="w-full max-w-5xl mx-auto flex justify-end items-center mb-8">
+        <div className="flex bg-white/80 backdrop-blur-md rounded-full p-1 shadow-sm border border-gray-100">
+          <button 
+            onClick={() => setViewMode('gallery')}
+            className={clsx(
+              "px-6 py-2 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300", 
+              viewMode === 'gallery' ? "bg-black text-white shadow-md" : "text-gray-500 hover:text-black"
+            )}
+          >
+            {t('galleryView')}
+          </button>
+          <button 
+            onClick={() => setViewMode('list')}
+            className={clsx(
+              "px-6 py-2 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300", 
+              viewMode === 'list' ? "bg-black text-white shadow-md" : "text-gray-500 hover:text-black"
+            )}
+          >
+            {t('viewMore')}
+          </button>
+        </div>
       </div>
 
       {viewMode === 'gallery' ? (

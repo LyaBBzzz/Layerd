@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart } from 'lucide-react';
 import clsx from 'clsx';
 import { useShop } from '../../context/ShopContext';
 
-export const ProductCard = ({ product }) => {
+export const ProductCard = ({ product, initialColor }) => {
   const { addToCart, language, t, navigateTo, wishlistItems, toggleWishlist, formatPrice } = useShop();
   const [currentColorIndex, setCurrentColorIndex] = useState(0);
 
+  useEffect(() => {
+    if (initialColor) {
+      const idx = product.colors.findIndex(c => c.name === initialColor);
+      if (idx !== -1) {
+        setCurrentColorIndex(idx);
+      }
+    }
+  }, [initialColor, product.colors]);
+
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-sm flex flex-col hover:shadow-lg transition-shadow h-full group">
-      <h3 className="font-anton text-2xl uppercase tracking-wide mb-4">{product.brand}</h3>
+    <div className="bg-white rounded-3xl p-6 shadow-sm flex flex-col hover:shadow-lg transition-shadow h-full group min-h-0">
+      <h3 className="font-anton text-2xl uppercase tracking-wide mb-4 truncate" title={product.brand}>{product.brand}</h3>
       <div 
-        className="aspect-square flex items-center justify-center bg-[#f4f4f4] rounded-2xl p-4 cursor-pointer mb-4 overflow-hidden relative"
+        className="w-full aspect-square flex items-center justify-center bg-[#f4f4f4] rounded-2xl p-4 cursor-pointer mb-4 overflow-hidden relative"
         onClick={() => {
           navigateTo('product', product);
         }}
@@ -45,7 +54,7 @@ export const ProductCard = ({ product }) => {
               e.stopPropagation();
               toggleWishlist(product, product.colors[currentColorIndex]);
             }}
-            className="w-10 h-10 bg-white/80 backdrop-blur-md shadow-sm rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-colors text-black"
+            className="w-10 h-10 bg-white/80 backdrop-blur-md shadow-sm rounded-full flex items-center justify-center hover:bg-black hover:text-white hover:scale-110 hover:shadow-md transition-all duration-300 text-black"
           >
             <Heart size={16} className={clsx(wishlistItems.some(i => i.id === product.id) ? "fill-current" : "")} />
           </button>
@@ -58,7 +67,7 @@ export const ProductCard = ({ product }) => {
               // Select first available size by default for quick add
               addToCart(product, product.availableSizes[0], product.colors[currentColorIndex]);
             }}
-            className="w-full py-3 bg-black/90 backdrop-blur-md text-white rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-black transition-colors flex items-center justify-center shadow-lg"
+            className="w-full py-3 bg-black/90 backdrop-blur-md text-white rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-gray-800 hover:scale-105 hover:shadow-xl transition-all duration-300 flex items-center justify-center shadow-lg"
           >
             {t('addToCart')} <ShoppingCart size={14} className="ml-2" />
           </button>

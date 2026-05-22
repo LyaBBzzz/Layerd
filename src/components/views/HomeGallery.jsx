@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Heart } from 'lucide-react';
+import { ShoppingCart, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CustomSelect } from '../CustomSelect';
 import { MagneticButton } from '../MagneticButton';
 import { ReviewsCarousel } from './ReviewsCarousel';
@@ -35,6 +35,24 @@ export const HomeGallery = ({
           className="relative w-full max-w-4xl aspect-[2/1] flex items-center justify-center perspective-[1000px]"
           style={{ filter: galleryBlur, opacity: galleryOpacity, y: galleryY }}
         >
+          {galleryProducts.length > 1 && (
+            <>
+              <button 
+                className="absolute left-4 md:left-12 z-20 p-2 md:p-3 bg-white/50 backdrop-blur-md rounded-full hover:bg-white shadow-md transition-all text-gray-800"
+                onClick={() => setActiveIndex((prev) => (prev - 1 + galleryProducts.length) % galleryProducts.length)}
+              >
+                <ChevronLeft size={24} />
+              </button>
+              
+              <button 
+                className="absolute right-4 md:right-12 z-20 p-2 md:p-3 bg-white/50 backdrop-blur-md rounded-full hover:bg-white shadow-md transition-all text-gray-800"
+                onClick={() => setActiveIndex((prev) => (prev + 1) % galleryProducts.length)}
+              >
+                <ChevronRight size={24} />
+              </button>
+            </>
+          )}
+
           {galleryProducts.map((product, idx) => {
             let offset = idx - activeIndex;
             if (offset < -1) offset += galleryProducts.length;
@@ -60,13 +78,10 @@ export const HomeGallery = ({
                   }
                 }}
                 initial={false}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.2}
-                onDragEnd={(e, { offset }) => {
-                  if (offset.x < -50) {
+                onPanEnd={(e, info) => {
+                  if (info.offset.x < -50) {
                     setActiveIndex((prev) => (prev + 1) % galleryProducts.length);
-                  } else if (offset.x > 50) {
+                  } else if (info.offset.x > 50) {
                     setActiveIndex((prev) => (prev - 1 + galleryProducts.length) % galleryProducts.length);
                   }
                 }}
@@ -78,7 +93,7 @@ export const HomeGallery = ({
                   opacity: isActive ? 1 : 0.4,
                   filter: isActive ? 'blur(0px)' : 'blur(4px)'
                 }}
-                transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                transition={{ type: "spring", stiffness: 250, damping: 25 }}
                 style={{ zIndex: isActive ? 10 : 1 }}
               >
                 <img 
@@ -180,27 +195,23 @@ export const HomeGallery = ({
               </div>
 
               <div className="flex space-x-4 mb-10 w-full">
-                <MagneticButton className="flex-1">
-                  <button 
-                    onClick={() => addToCart(activeProduct, selectedSize, activeProduct.colors[selectedColors[activeProduct.id] || 0])}
-                    className="w-full bg-[#a3a3a3] hover:bg-black transition-colors text-white rounded-full py-3 flex items-center justify-center font-bold text-xs uppercase"
-                  >
-                    {t('addToCart')} <ShoppingCart size={14} className="ml-2" />
-                  </button>
-                </MagneticButton>
-                <MagneticButton>
-                  <button 
-                    onClick={() => toggleWishlist(activeProduct, activeProduct.colors[selectedColors[activeProduct.id] || 0])}
-                    className={clsx(
-                      "w-12 h-12 rounded-full border flex items-center justify-center transition-colors",
-                      wishlistItems.some(i => i.id === activeProduct.id && i.selectedColor.name === activeProduct.colors[selectedColors[activeProduct.id] || 0].name) 
-                        ? "bg-red-50 border-red-100 text-red-500 hover:bg-red-100" 
-                        : "border-gray-300 hover:bg-gray-100 text-black"
-                    )}
-                  >
-                    <Heart size={16} fill={wishlistItems.some(i => i.id === activeProduct.id && i.selectedColor.name === activeProduct.colors[selectedColors[activeProduct.id] || 0].name) ? "currentColor" : "none"} />
-                  </button>
-                </MagneticButton>
+                <button 
+                  onClick={() => addToCart(activeProduct, selectedSize, activeProduct.colors[selectedColors[activeProduct.id] || 0])}
+                  className="flex-1 w-full bg-[#a3a3a3] hover:bg-black hover:scale-[1.02] hover:shadow-lg transition-all duration-300 text-white rounded-full py-3 flex items-center justify-center font-bold text-xs uppercase"
+                >
+                  {t('addToCart')} <ShoppingCart size={14} className="ml-2" />
+                </button>
+                <button 
+                  onClick={() => toggleWishlist(activeProduct, activeProduct.colors[selectedColors[activeProduct.id] || 0])}
+                  className={clsx(
+                    "w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-md shrink-0",
+                    wishlistItems.some(i => i.id === activeProduct.id && i.selectedColor.name === activeProduct.colors[selectedColors[activeProduct.id] || 0].name) 
+                      ? "bg-red-50 border-red-100 text-red-500 hover:bg-red-100" 
+                      : "border-gray-300 hover:bg-gray-100 text-black hover:border-gray-400"
+                  )}
+                >
+                  <Heart size={16} fill={wishlistItems.some(i => i.id === activeProduct.id && i.selectedColor.name === activeProduct.colors[selectedColors[activeProduct.id] || 0].name) ? "currentColor" : "none"} />
+                </button>
               </div>
 
               <div className="mt-4">
