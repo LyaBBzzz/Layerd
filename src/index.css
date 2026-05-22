@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@config "../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply bg-[#f4f4f4] text-[#111111] font-sans antialiased overflow-x-hidden;
+  }
+}
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; } .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
