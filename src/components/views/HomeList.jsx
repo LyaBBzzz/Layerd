@@ -39,7 +39,7 @@ export const HomeList = ({
             onChange={(val) => setFilterColor(val)}
             options={[
               { value: '', label: t('allColors') },
-              ...allAvailableColors.map(c => ({ value: c, label: c }))
+              ...allAvailableColors.map(c => ({ value: c, label: t(`color_${c}`) !== `color_${c}` ? t(`color_${c}`) : c }))
             ]}
             placeholder={t('allColors')}
             className="w-full bg-transparent border border-gray-300 rounded-full px-2 md:px-4 py-2 text-[10px] sm:text-xs font-bold outline-none cursor-pointer hover:border-black transition-colors flex justify-center"

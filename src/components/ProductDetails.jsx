@@ -197,7 +197,7 @@ export const ProductDetails = () => {
                 transition={{ duration: 0.2 }}
                 className="text-gray-500 font-bold text-sm uppercase tracking-widest"
               >
-                {activeColor.name}
+                {t(`color_${activeColor.name}`) !== `color_${activeColor.name}` ? t(`color_${activeColor.name}`) : activeColor.name}
               </motion.p>
             </AnimatePresence>
           </div>
@@ -224,7 +224,7 @@ export const ProductDetails = () => {
                       activeIndex === idx ? "border-black scale-110" : "border-transparent"
                     )}
                     style={{ backgroundColor: c.colorCode, boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1)' }}
-                    title={c.name}
+                    title={t(`color_${c.name}`) !== `color_${c.name}` ? t(`color_${c.name}`) : c.name}
                   />
                 ))}
               </div>

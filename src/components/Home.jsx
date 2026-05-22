@@ -19,7 +19,8 @@ export const Home = () => {
   const [zoomedImage, setZoomedImage] = useState(null);
   
   const { scrollY } = useScroll();
-  const galleryBlur = useTransform(scrollY, [0, 400], ['blur(0px)', 'blur(12px)']);
+  const rawBlur = useTransform(scrollY, [0, 400], [0, 12]);
+  const galleryBlur = useTransform(rawBlur, v => `blur(${Math.max(0, v)}px)`);
   const galleryOpacity = useTransform(scrollY, [0, 400], [1, 0.4]);
   const galleryY = useTransform(scrollY, [0, 400], [0, 200]);
 
