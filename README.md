@@ -15,7 +15,7 @@
 
 ```bash
 git clone <url_вашего_репозитория>
-cd luxury-shop
+cd Layered
 ```
 
 Установите зависимости:
