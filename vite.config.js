@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     ViteImageOptimizer({
       png: {
-        quality: 70, // Compresses PNGs while keeping good visual quality
+        quality: 100, // Установлено 100, чтобы не портить качество фоновых PNG при билде
       },
       jpeg: {
         quality: 70,

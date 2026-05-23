@@ -7,10 +7,10 @@ export const Landing = () => {
   const { navigateTo, language, setActiveDepartment } = useShop();
 
   return (
-    <div className="w-full h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory bg-black">
+    <div className="w-full h-screen overflow-y-auto overflow-x-hidden bg-black scroll-smooth">
       
       {/* SECTION 1: MAIN BRAND HERO */}
-      <section className="w-full h-screen snap-start relative flex flex-col items-center justify-center overflow-hidden shrink-0">
+      <section className="w-full h-screen relative flex flex-col items-center justify-center overflow-hidden shrink-0">
         <motion.img 
           initial={{ scale: 1.1 }}
           whileInView={{ scale: 1 }}
@@ -70,7 +70,7 @@ export const Landing = () => {
       </section>
 
       {/* SECTION 2: MEN COLLECTION */}
-      <section className="w-full h-screen snap-start relative flex flex-col items-center justify-center overflow-hidden shrink-0">
+      <section className="w-full h-screen relative flex flex-col items-center justify-center overflow-hidden shrink-0">
         <motion.img 
           initial={{ scale: 1.1 }}
           whileInView={{ scale: 1 }}
@@ -118,7 +118,7 @@ export const Landing = () => {
       </section>
 
       {/* SECTION 3: WOMEN COLLECTION */}
-      <section className="w-full h-screen snap-start relative flex flex-col items-center justify-center overflow-hidden shrink-0">
+      <section className="w-full h-screen relative flex flex-col items-center justify-center overflow-hidden shrink-0">
         <motion.img 
           initial={{ scale: 1.1 }}
           whileInView={{ scale: 1 }}
