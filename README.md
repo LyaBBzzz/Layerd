@@ -1,16 +1,63 @@
-# React + Vite
+# LAYERED - сайт магазина одежды
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Технологический стек
 
-Currently, two official plugins are available:
+- **React 19** — библиотека для построения пользовательских интерфейсов.
+- **Vite 8** — сверхбыстрый инструмент сборки и сервер разработки.
+- **Tailwind CSS 4** — utility-first CSS фреймворк для создания современного и адаптивного дизайна.
+- **Framer Motion** — мощная библиотека для создания плавных анимаций, скролл-эффектов и микро-интеракций.
+- **Lucide React** — коллекция современных и минималистичных SVG-иконок.
+- **ESLint** — поддержка чистоты кода и соблюдение стандартов.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Установка и запуск
 
-## React Compiler
+Клонируйте репозиторий (или скачайте файлы проекта):
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+git clone <url_вашего_репозитория>
+cd luxury-shop
+```
 
-## Expanding the ESLint configuration
+Установите зависимости:
+Убедитесь, что у вас установлен Node.js (версии 18+).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+```
+
+Запустите сервер для разработки:
+
+```bash
+npm run dev
+```
+
+После этого проект будет доступен по адресу: `http://localhost:5173`
+
+Сборка для продакшена:
+
+```bash
+npm run build
+```
+
+Оптимизированные файлы появятся в папке `dist/`.
+
+## Структура проекта
+
+```text
+Layered/
+├── public/                 # Статические ресурсы
+│   ├── images/             # Изображения (баннеры коллекций, фото товаров)
+│   └── ...
+├── src/
+│   ├── assets/             # Локальные ассеты проекта
+│   ├── components/         # Переиспользуемые UI-компоненты (Landing, TopNav, Blog и др.)
+│   ├── context/            # Контексты приложения (например, ShopContext для управления стейтом)
+│   ├── data/               # Данные (информация о товарах)
+│   ├── App.jsx             # Главный компонент, объединяющий структуру
+│   ├── index.css           # Глобальные стили и директивы Tailwind
+│   └── main.jsx            # Точка входа в React-приложение
+├── index.html              # Базовый HTML-шаблон
+├── package.json            # Зависимости и скрипты
+├── tailwind.config.js      # Конфигурация Tailwind CSS
+└── vite.config.js          # Конфигурация сборщика Vite
+```
